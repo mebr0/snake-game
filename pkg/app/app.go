@@ -1,9 +1,8 @@
 package app
 
 import (
-	"bufio"
+	"errors"
 	"fmt"
-	"os"
 
 	"github.com/mebr0/snake-game/pkg/game"
 	"github.com/mebr0/snake-game/pkg/ui"
@@ -15,17 +14,29 @@ func Run(height int, width int) {
 
 	ui.Draw(g)
 
-	scanner := bufio.NewScanner(os.Stdin)
 	alive := true
 
-	for alive && scanner.Scan() {
-		com := scanner.Text()
+	var com string
 
-		dir := read(com)
+	for alive {
+		_, err := fmt.Scanln(&com)
 
-		if err := g.Move(dir); err != nil {
+		if err != nil {
+			fmt.Println(err.Error())
+			continue
+		}
+
+		dir, err := read(com)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			continue
+		}
+
+		if err = g.Move(dir); err != nil {
 			fmt.Println(err.Error())
 			alive = false
+			continue
 		}
 
 		if alive {
@@ -36,17 +47,19 @@ func Run(height int, width int) {
 	fmt.Println("game finished")
 }
 
-func read(command string) game.Move {
+var errInvalidCommand = errors.New("invalid command")
+
+func read(command string) (game.Move, error) {
 	switch command {
 	case "l":
-		return game.LeftMove
+		return game.LeftMove, nil
 	case "u":
-		return game.UpMove
+		return game.UpMove, nil
 	case "r":
-		return game.RightMove
+		return game.RightMove, nil
 	case "d":
-		return game.DownMove
-	default:
-		return game.LeftMove
+		return game.DownMove, nil
 	}
+
+	return 0, errInvalidCommand
 }

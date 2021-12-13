@@ -2,6 +2,14 @@
 
 Console snake game as test task for SkyCoin made within 3 hours
 
+---
+After feedback following was fixed:
+
+- Using `fmt.Scanln` rather than `bufio.Scanner`
+- Returning proper error rather than default value
+- Removing loop label
+---
+
 ## How to play
 
 Run

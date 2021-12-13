@@ -41,18 +41,24 @@ func NewGame(height int, width int) Game {
 func (g *Game) generateFood() {
 	found := false
 
-f:
 	for !found {
 		rand.Seed(time.Now().UnixNano())
 		// calibrate x and y within bounds
 		x := rand.Intn(g.Height-2) + 1
 		y := rand.Intn(g.Width-2) + 1
 
+		again := false
+
 		// check collisions with snake
 		for _, p := range g.Snake.Body() {
 			if p.X == x && p.Y == y {
-				continue f
+				again = true
+				break
 			}
+		}
+
+		if again {
+			continue
 		}
 
 		found = true
